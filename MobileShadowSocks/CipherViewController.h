@@ -10,13 +10,10 @@
 #import "SettingTableViewController.h"
 
 @interface CipherViewController : UITableViewController {
-    SettingTableViewController *_parentView;
-    NSInteger _cipherNumber;
     NSInteger _selectedCipher;
-    NSArray *_cipherNameArray;
-    NSArray *_cipherKeyArray;
 }
 
-- (id)initWithStyle:(UITableViewStyle)style withParentView:(SettingTableViewController *)parentView;
++ (BOOL)cipherIsValid:(NSString *)cipher;
++ (NSString *)defaultCipher;
 
 @end

@@ -7,31 +7,36 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CodeScannerViewController.h"
 
-typedef enum {kProxyPac, kProxySocks, kProxyNone} ProxyStatus;
+#define LOCAL_PORT 1983
+#define PAC_PORT 1993
+#define LOCAL_TIMEOUT 60
 
-@interface SettingTableViewController : UITableViewController <UITextFieldDelegate> {
+@protocol SettingTableViewControllerDelegate <NSObject>
+
+- (void)showError:(NSString *)error;
+- (void)setBadge:(BOOL)enabled;
+- (void)setProxySwitcher:(BOOL)enabled;
+- (void)setAutoProxySwitcher:(BOOL)enabled;
+- (void)checkFileNotFound;
+
+@end
+
+@interface SettingTableViewController : UITableViewController <UITextFieldDelegate, UIAlertViewDelegate, UIActionSheetDelegate, CodeScannerDelegate, SettingTableViewControllerDelegate> {
     CGFloat _cellWidth;
     NSInteger _tableSectionNumber;
     NSArray *_tableRowNumber;
     NSArray *_tableSectionTitle;
     NSArray *_tableElements;
-    NSInteger _tagNumber;
-    NSInteger _pacFileCellTag;
-    NSInteger _autoProxyCellTag;
-    NSInteger _enableCellTag;
-    NSMutableArray *_tagKey;
-    NSMutableArray *_tagWillNotifyChange;
-    NSString *_pacURL;
-    BOOL _isEnabled;
-    BOOL _isPrefChanged;
+    NSString *_pacDefaultFile;
+    BOOL _isBuggyPhotoPicker;
 }
 
 - (void)fixProxy;
-- (BOOL)setProxy:(ProxyStatus)status;
-- (void)setPrefChanged;
-- (void)notifyChanged;
-- (void)notifyChangedWhenRunning;
-- (void)setBadge;
+- (void)updateProxy;
+- (BOOL)useLibFinder;
+- (UIViewController *)allocFinderController;
+- (void)finderSelectedFilePath:(NSString *)path checkSanity:(BOOL)check;
 
 @end

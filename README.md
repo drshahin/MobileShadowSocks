@@ -6,17 +6,22 @@ By Linus Yang
 ------
 
 ### Features
-* Fast, efficient and easy to use
-* System-wide proxy supporting Wi-Fi and Celluar networks
-* Universal app for iPhone, iPad and iPod touch with *jailbroken* iOS 3.0 or above
-* **NEW:** On-demand proxy, no need to start manually 
-* **NEW:** Pre-installed PAC file using white-list
-* **NEW:** AES cipher mode for strong encryption
+* __Fast__: Light-weight proxy protocol by @[clowwindy](https://github.com/clowwindy).
+* __Secure__: Support plenty of ciphers, including AES, Blowfish and Camellia.
+* __Efficient__: Proxy services are triggered on demand.
+* __User-friendly__: Easy to set and use. Built-in __auto-proxy__ feature.
+* __Per-App Proxy Support__: Enable or disable proxy app by app. (_Support by extra plugin_)
+* __QR Code Support__: Share your profiles easily via QR Code.
+* __Universal__: System-wide proxy for either Wi-Fi or cellular network.
+* __All-in-one__: No extra dependency. No Cydia Substrate stuff (_except plugins_ :P).
+* __Compatibility__: All iDevices with iOS 3.0 and above (Some features need iOS 5 or above).
 
 ### Installation
 1. Open Cydia.app and refresh sources
 2. Search the package named *ShadowSocks* and install it
 3. That's it!
+
+__Note__: Latest packages are also available [here](http://apt.thebigboss.org/onepackage.php?bundleid=com.linusyang.shadowsocks) for manual installation.
 
 ### Usage
 1. After installation, you will find a icon named *Shadow* on your device.
@@ -35,20 +40,47 @@ Just open the *Shadow* app again and switch off "Enable Proxy".
 Yes, it is always available if the proxy settings are enabled. The icon badge of Shadow.app will also show "On" to indicate that proxy is available.
 
 #### 4. Is the shadowsocks daemon always running in the background and consuming my battery?
-No. The daemon uses the " **On Demand** " mechanism of `launchd`, which means it is battery-friendly. It starts up only when receiving proxy requests and will exit automatically if there is no request for about 60 seconds. So, don't worry for battery life, **just leave it there**. :)
+No. The daemon uses the "__On Demand__" mechanism of `launchd`, which means it is battery-friendly. It starts up only when receiving proxy requests. So, don't worry for battery life, __just leave it there__. :)
 
-#### 5. I cannot find any proxy settings in *Settings.app*. Is the proxy actually enabled? And where are the proxy settings?
-The proxy settings are **indeed** set successfully if you don't see any alert views when turning on the switch. They just don't show in the Settings.app. If you want to check it, call `scutil --proxy` in terminal.
+#### 5. I cannot find any proxy settings in *Settings*. Is the proxy actually enabled? And where are the proxy settings?
+The proxy settings are **indeed** set successfully if you don't see any alert views when turning on the switch. Sometimes they just don't show in the Settings (or wrongly show in the proxy for VPN). For advanced users, try `scutil --proxy` to check proxy status in terminal.
+
+#### 6. My device uses iOS 5.x and has installed the app from Cydia. But why does it show an earlier version in the about?
+The version in Cydia has removed the support for iOS 5.x and fall back to a legacy version. Please try to find the iOS 5.x compatible builds with new functions in the [Releases](https://github.com/linusyang/MobileShadowSocks/releases) section.
 
 ### Credits
 * [Shadowsocks](https://github.com/clowwindy/shadowsocks) project created by @[clowwindy](https://github.com/clowwindy)
 * Based on [Shadowsocks-libev](https://github.com/linusyang/shadowsocks-libev) from @[madeye](https://github.com/madeye)
-* App icon from [Tunnelblick](https://tunnelblick.googlecode.com) (Too lazy to draw one by myself :P)
+* App icon by @[madeye](https://github.com/madeye) from [Shadowsocks Android](https://github.com/shadowsocks/shadowsocks-android) (Too lazy to draw one by myself :P)
+* QR Code encoding and decoding by [ZXingObjC](https://github.com/TheLevelUp/ZXingObjC)
+* Force proxying Chrome on iOS 8 via [proxychains](https://github.com/haad/proxychains)
 
-### Note for Developers
-* You have to create a self-signed code-signing certificate named *iPhone Developer* ([turtorial](https://developer.apple.com/library/mac/#documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html)).
-* In order to build armv6 binary, you have to install iOS **5.1** SDK ([turtorial](http://blog.chpwn.com/post/31824877081)).
-* The final Debian package will be generated under **release** directory in the project directory.
+### Development
+
+#### Prerequisites
+* Xcode
+
+__Note__: You need to first quit Xcode completely and disable force code-sign of iOS SDK as follows:
+
+```bash
+SDKFILE="$(xcode-select --print-path)/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/SDKSettings.plist"
+sudo /usr/libexec/PlistBuddy -c "Set :DefaultProperties:CODE_SIGNING_REQUIRED NO" "$SDKFILE"
+sudo /usr/bin/plutil -convert binary1 "$SDKFILE"
+```
+
+* Code-signing certificate named *iPhone Developer* (either self-signed or official is OK)
+
+#### Build
+Use the following command to download the project and build the main app:
+
+```bash
+git clone --recursive https://github.com/linusyang/MobileShadowSocks.git
+cd MobileShadowSocks
+ln -s /opt/theos perapp-plugin/theos
+make
+```
+
+All built Debian packages will be generated under `release` folder in the project directory.
 
 ### License
-Licensed under [GPLv3](http://www.gnu.org/licenses/gpl.html)
+Licensed under [GPLv3](http://www.gnu.org/licenses/gpl.html).
